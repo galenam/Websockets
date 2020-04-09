@@ -1,0 +1,8 @@
+node_modules
+bin
+obj
+.vscode
+debug.log
+build
+Server/Properties
+client/readme.md

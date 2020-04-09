@@ -1,0 +1,6 @@
+{
+  "short_name": "Rate of exchange",
+  "name": "Get rates of exchange from cbr",
+  "start_url": ".",
+  "display": "standalone"
+}
