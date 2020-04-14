@@ -16,9 +16,7 @@ class App extends Component {
   }
 
   componentWillUnmount() {
-    console.log('close1');
     client.close();
-    console.log('close2');
   }
   constructor(props) {
     super(props);
@@ -29,14 +27,13 @@ class App extends Component {
   }
   handleChange(event) {
     const text = event.target.value;
-    console.log('text=' + text);
     this.setState({ text: text });
 
     if (client.readyState == client.OPEN) {
       client.send(text);
     }
     else {
-      console.log('just connecting');
+      console.log('client.readyState=' + client.readyState);
     }
   }
 
