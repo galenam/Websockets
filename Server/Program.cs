@@ -9,24 +9,29 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using NLog.Web;
 
-namespace Websockets
+namespace WebSockets
 {
     public class Program
     {
         public static void Main(string[] args)
         {
             NLog.Web.NLogBuilder.ConfigureNLog("nlog.config");
-            CreateWebHostBuilder(args).Build().Run();
+            CreateWebHostBuilder(args)
+            .Build()
+            //.GetDataFromCBR()
+            .Run();
         }
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args).
             ConfigureAppConfiguration((builderContext, config) =>
             {
-                config.SetBasePath(Directory.GetCurrentDirectory()).
-                AddJsonFile("appsettings.json", true, true);
+                //\\server\\
+                config.SetBasePath($"{Directory.GetCurrentDirectory()}")
+                .AddJsonFile("appsettings.json", true, true).Build();
             })
                 .UseStartup<Startup>()
                 .UseNLog();
+
     }
 }

@@ -12,20 +12,27 @@ using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Console;
 using Microsoft.Extensions.Logging.Debug;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 
-namespace Websockets
+namespace WebSockets
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; set; }
+        public Startup(IConfiguration conf)
+        {
+            Configuration = conf;
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
-        {/*
-            services.AddLogging(builder =>
-            {
-                builder.AddConsole().AddDebug().AddFilter<ConsoleLoggerProvider>(category: null, LogLevel.Debug)
-                .AddFilter<DebugLoggerProvider>(null, LogLevel.Debug);
-            });*/
+        {
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSingleton<ICBRRepository, CBRRepository>();
+            services.AddMemoryCache();
+            services.Configure<Options>(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -35,7 +42,16 @@ namespace Websockets
             {
                 app.UseDeveloperExceptionPage();
             }
-            app.UseWebSockets();
+
+            else
+            {
+                app.UseHsts();
+            }
+            app.UseHttpsRedirection();
+
+            app.UseMvc();
+
+            /*app.UseWebSockets();
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path == "/ws")
@@ -54,7 +70,7 @@ namespace Websockets
                 {
                     await next();
                 }
-            });
+            });*/
         }
 
         private async Task Echo(HttpContext context, WebSocket webSocket)
