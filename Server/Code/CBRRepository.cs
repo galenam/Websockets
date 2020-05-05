@@ -31,7 +31,7 @@ namespace WebSockets
             options = _options.Value;
             cache = _cache;
         }
-        public async Task<IEnumerable<Rate>> GetAsync()
+        public async Task<IDictionary<string, Rate>> GetAsync()
         {
             IDictionary<string, Rate> dict;
             if (!cache.TryGetValue(cacheKey, out dict))
@@ -44,8 +44,7 @@ namespace WebSockets
                 cache.Set(cacheKey, dict, new System.DateTimeOffset(DateTime.Now.AddHours(options.HoursToCache)));
 
             }
-            var result = dict?.Select(item => item.Value);
-            return result;
+            return dict;
         }
     }
 }

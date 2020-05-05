@@ -1,5 +1,8 @@
+using System;
+
 namespace WebSockets
 {
+    [Serializable]
     public class Rate
     {
         public string Id { get; set; }

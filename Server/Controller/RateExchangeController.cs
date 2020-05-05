@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -18,9 +19,11 @@ namespace WebSockets
             cBRRepository = _cbrRepo;
         }
 
-        public async Task<IEnumerable<Rate>> Get()
+        public async Task<IEnumerable<string>> Get()
         {
-            return await cBRRepository.GetAsync();
+            var dict = await cBRRepository.GetAsync();
+            var result = dict?.Select(item => item.Value.CharCode);
+            return result;
         }
 
     }

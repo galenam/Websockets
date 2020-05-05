@@ -5,6 +5,6 @@ namespace WebSockets
 {
     public interface ICBRRepository
     {
-        Task<IEnumerable<Rate>> GetAsync();
+        Task<IDictionary<string, Rate>> GetAsync();
     }
 }

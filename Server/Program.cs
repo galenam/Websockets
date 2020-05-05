@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using NLog.Web;
 
 namespace WebSockets
@@ -18,7 +13,6 @@ namespace WebSockets
             NLog.Web.NLogBuilder.ConfigureNLog("nlog.config");
             CreateWebHostBuilder(args)
             .Build()
-            //.GetDataFromCBR()
             .Run();
         }
 
@@ -26,7 +20,6 @@ namespace WebSockets
             WebHost.CreateDefaultBuilder(args).
             ConfigureAppConfiguration((builderContext, config) =>
             {
-                //\\server\\
                 config.SetBasePath($"{Directory.GetCurrentDirectory()}")
                 .AddJsonFile("appsettings.json", true, true).Build();
             })
