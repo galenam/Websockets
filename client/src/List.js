@@ -1,8 +1,11 @@
 import React, { Component } from 'react';
 import Rate from './Rate.js';
+import 'bootstrap/dist/css/bootstrap.css';
+import './css/List.css';
 
-const client = new WebSocket("wss://localhost:5001/ws");
-
+const urlWss = process.env.REACT_APP_WSS_URL;
+const client = new WebSocket(urlWss);
+// todo : история просмотров курсов???
 class List extends Component {
     componentWillUnmount() {
         client.close();
@@ -19,7 +22,7 @@ class List extends Component {
         }
         this.handleChange = this.handleChange.bind(this);
     }
-    // todo: api url to the config
+    // todo: delete redundant console.log
     componentDidMount() {
         client.onopen = () => {
             console.log("websocket open")
@@ -36,13 +39,18 @@ class List extends Component {
         client.onerror = (event) => {
             console.log(event);
         }
-
-        fetch("https://localhost:5001/api/rateexchange")
-            .then(res => res.json())
+        const url = process.env.REACT_APP_API_URL;
+        fetch(url)
+            .then(res => {
+                console.log(res);
+                return res.json();
+            })
             .then(result => {
+                let list = [<option value="" key="">Choose the rate</option>];
+                list = list.concat(result.map(value => <option value={value} key={value}>{value}</option>));
                 this.setState(
                     {
-                        rates: result.map(value => <option value={value} key={value}>{value}</option>),
+                        rates: list,
                         isLoaded: true
                     }
                 )
@@ -54,21 +62,29 @@ class List extends Component {
                         error: error
                     })
                 })
-    }
+    };
 
     handleChange(event) {
         const text = event.target.value;
         if (text !== null) {
             client.send(text);
         }
-    }
+    };
 
     render() {
-        return <div><select onChange={this.handleChange}>
-            {this.state.rates}
-        </select>
+        return <div>
+            <div className="listMain">
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <label className="input-group-text" htmlFor="inputGroupSelect01">Currencies</label>
+                    </div>
+                    <select className="custom-select" id="inputGroupSelect01" onChange={this.handleChange}>
+                        {this.state.rates}
+                    </select>
+                </div>
+            </div>
             <Rate Value={this.state.currentRate} IsShow={this.state.showRate}></Rate>
-        </div>
+        </div>;
     }
 }
 export default List;
