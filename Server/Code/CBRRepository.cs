@@ -36,12 +36,22 @@ namespace WebSockets
             IDictionary<string, Rate> dict;
             if (!cache.TryGetValue(cacheKey, out dict))
             {
-                var httpResponse = await client.GetAsync(options.UrlRateOfExchange);
-                var stringResponse = await httpResponse.Content.ReadAsStringAsync();
+                try
+                {
+                    var httpResponse = await client.GetAsync(options.UrlRateOfExchange);
+                    var stringResponse = await httpResponse.Content.ReadAsStringAsync();
 
-                var cbrResponse = JsonConvert.DeserializeObject<CBRResponse>(stringResponse);
-                dict = cbrResponse?.Valute;
-                cache.Set(cacheKey, dict, new System.DateTimeOffset(DateTime.Now.AddHours(options.HoursToCache)));
+                    var cbrResponse = JsonConvert.DeserializeObject<CBRResponse>(stringResponse);
+                    dict = cbrResponse?.Valute;
+                }
+                catch (Exception ex)
+                {
+                    logger.LogCritical(ex, "Load error");
+                }
+                if (dict != null)
+                {
+                    cache.Set(cacheKey, dict, new System.DateTimeOffset(DateTime.Now.AddHours(options.HoursToCache)));
+                }
 
             }
             return dict;

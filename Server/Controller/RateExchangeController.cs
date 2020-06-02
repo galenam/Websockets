@@ -23,9 +23,7 @@ namespace WebSockets
         {
             var dict = await cBRRepository.GetAsync();
             var result = dict?.Select(item => item.Value.CharCode);
-            return result;
+            return result ?? Enumerable.Empty<string>();
         }
-
     }
-
 }
